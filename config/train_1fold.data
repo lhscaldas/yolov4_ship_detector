@@ -1,0 +1,5 @@
+classes = 5
+        train = data/train_1fold.txt
+        valid = data/test.txt
+        names = data/train.names
+        backup = /mydrive/navios/backup_1fold

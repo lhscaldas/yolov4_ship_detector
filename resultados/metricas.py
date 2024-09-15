@@ -42,16 +42,16 @@ resultado_kfold_20k = {
 
 # n-folds
 resultado_nfolds = {
-    'ap_0': [0.9966, 0.9954, 0.9965, 0.9981],
-    'ap_1': [0.9998, 0.9995, 0.9992, 0.9998],
-    'ap_2': [0.9956, 0.9978, 0.9990, 0.9971],
-    'ap_3': [0.9996, 0.9997, 0.9994, 0.9999],
-    'ap_4': [1.0000, 1.0000, 1.0000, 1.0000],
-    'map': [0.998312, 0.998486, 0.998821, 0.998957],
-    'precision': [0.99, 0.99, 0.99, 0.98],
-    'recall': [0.99, 0.99, 1.00, 0.99],
-    'f1': [0.99, 0.99, 1.00, 0.99],
-    'IoU': [0.8662, 0.8664, 0.8691, 0.8292]
+    'ap_0': [0.9966, 0.9954, 0.9965, 0.9981, 1.0000],
+    'ap_1': [0.9998, 0.9995, 0.9992, 0.9998, 1.0000],
+    'ap_2': [0.9956, 0.9978, 0.9990, 0.9971, 0.9996],
+    'ap_3': [0.9996, 0.9997, 0.9994, 0.9999, 0.9998],
+    'ap_4': [1.0000, 1.0000, 1.0000, 1.0000, 1.0000],
+    'map': [0.998312, 0.998486, 0.998821, 0.998957, 0.999867],
+    'precision': [0.99, 0.99, 0.99, 0.98, 1.00],
+    'recall': [0.99, 0.99, 1.00, 0.99, 1.00],
+    'f1': [0.99, 0.99, 1.00, 0.99, 1.00],
+    'IoU': [0.8662, 0.8664, 0.8691, 0.8292, 0.8972]
 }
 
 # final
@@ -67,3 +67,77 @@ resultado_final = {
     'f1': 1.00,
     'IoU': 0.8972
 }
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def calcular_media_desvio(dicionario):
+    resultados = {}
+    chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map', 'IoU']
+    
+    for chave in chaves_interesse:
+        valores = dicionario[chave]
+        media = np.mean(valores)
+        desvio_padrao = np.std(valores)
+        resultados[chave] = {'media': media, 'desvio_padrao': desvio_padrao}
+    
+    return resultados
+
+def gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k):
+    tabela_latex = "\\begin{table}[H]\n\\centering\n\\caption{Resultados Combinados}\n\\begin{tabular}{|c|c|c|c|c|c|c|}\n\\hline\n"
+    tabela_latex += "Métrica & Média 5k & Desvio 5k & Média 10k & Desvio 10k & Média 20k & Desvio 20k \\\\\n\\hline\n"
+    
+    chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map', 'IoU']
+    
+    for chave in chaves_interesse:
+        media_5k = resultados_5k[chave]['media']
+        desvio_5k = resultados_5k[chave]['desvio_padrao']
+        media_10k = resultados_10k[chave]['media']
+        desvio_10k = resultados_10k[chave]['desvio_padrao']
+        media_20k = resultados_20k[chave]['media']
+        desvio_20k = resultados_20k[chave]['desvio_padrao']
+        tabela_latex += f"{chave} & {media_5k:.6f} & {desvio_5k:.6f} & {media_10k:.6f} & {desvio_10k:.6f} & {media_20k:.6f} & {desvio_20k:.6f} \\\\\n\\hline\n"
+    
+    tabela_latex += "\\end{tabular}\n\\end{table}"
+    return tabela_latex
+
+def plot_variacao_folds(resultado_nfolds):
+    chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map']
+    num_folds = list(range(1, len(resultado_nfolds['ap_0']) + 1))
+    
+    fig, ax1 = plt.subplots(figsize=(12, 8))
+    
+    # Plotar as métricas principais no eixo y1
+    for chave in chaves_interesse:
+        ax1.plot(num_folds, resultado_nfolds[chave], marker='o', label=chave)
+    
+    ax1.set_xlabel('Número de Folds')
+    ax1.set_ylabel('Valor')
+    ax1.set_title('Variação das Métricas em Função do Número de Folds')
+    ax1.grid(True)
+    
+    # Adicionar um segundo eixo y para o IoU
+    ax2 = ax1.twinx()
+    ax2.plot(num_folds, resultado_nfolds['IoU'], marker='o', color='r', label='IoU')
+    ax2.set_ylabel('IoU', color='r')
+    ax2.tick_params(axis='y', labelcolor='r')
+    
+    # Combinar as legendas dos dois eixos
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='lower right')
+    
+    plt.show()
+
+if __name__ == '__main__':
+    # Calcular a média e desvio padrão dos resultados
+    resultados_5k = calcular_media_desvio(resultado_kfold_5k)
+    resultados_10k = calcular_media_desvio(resultado_kfold_10k)
+    resultados_20k = calcular_media_desvio(resultado_kfold_20k)
+    print(gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k))
+
+    # Plotar a variação das métricas em função do número de folds
+    plot_variacao_folds(resultado_nfolds)
+
+    

@@ -102,6 +102,63 @@ def gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k):
     tabela_latex += "\\end{tabular}\n\\end{table}"
     return tabela_latex
 
+def salvar_tabela_excel_combinada(resultados_5k, resultados_10k, resultados_20k, nome_arquivo):
+    chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map', 'IoU']
+    
+    dados = {
+        'Métrica': [],
+        'Média 5k': [],
+        'Desvio 5k': [],
+        'Média 10k': [],
+        'Desvio 10k': [],
+        'Média 20k': [],
+        'Desvio 20k': []
+    }
+    
+    for chave in chaves_interesse:
+        dados['Métrica'].append(chave)
+        dados['Média 5k'].append(resultados_5k[chave]['media'])
+        dados['Desvio 5k'].append(resultados_5k[chave]['desvio_padrao'])
+        dados['Média 10k'].append(resultados_10k[chave]['media'])
+        dados['Desvio 10k'].append(resultados_10k[chave]['desvio_padrao'])
+        dados['Média 20k'].append(resultados_20k[chave]['media'])
+        dados['Desvio 20k'].append(resultados_20k[chave]['desvio_padrao'])
+    
+    df = pd.DataFrame(dados)
+    df.to_excel(nome_arquivo, index=False)
+
+def plot_media_epocas(resultados_5k, resultados_10k, resultados_20k):
+    chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map']
+    num_epocas = [5, 10, 20]
+    
+    medias_5k = [resultados_5k[chave]['media'] for chave in chaves_interesse]
+    medias_10k = [resultados_10k[chave]['media'] for chave in chaves_interesse]
+    medias_20k = [resultados_20k[chave]['media'] for chave in chaves_interesse]
+    
+    fig, ax1 = plt.subplots(figsize=(12, 8))
+    
+    for i, chave in enumerate(chaves_interesse):
+        ax1.plot(num_epocas, [medias_5k[i], medias_10k[i], medias_20k[i]], marker='o', label=chave)
+    
+    ax1.set_xlabel('Quantidade de Épocas')
+    ax1.set_ylabel('Média')
+    ax1.set_title('Média das Métricas em Função da Quantidade de Épocas')
+    ax1.grid(True)
+    
+    # Adicionar um segundo eixo y para o IoU
+    ax2 = ax1.twinx()
+    medias_iou = [resultados_5k['IoU']['media'], resultados_10k['IoU']['media'], resultados_20k['IoU']['media']]
+    ax2.plot(num_epocas, medias_iou, marker='o', color='r', label='IoU')
+    ax2.set_ylabel('IoU', color='r')
+    ax2.tick_params(axis='y', labelcolor='r')
+    
+    # Combinar as legendas dos dois eixos
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='lower right')
+    
+    plt.show()
+
 def plot_variacao_folds(resultado_nfolds):
     chaves_interesse = ['ap_0', 'ap_1', 'ap_2', 'ap_3', 'ap_4', 'map']
     num_folds = list(range(1, len(resultado_nfolds['ap_0']) + 1))
@@ -135,7 +192,9 @@ if __name__ == '__main__':
     resultados_5k = calcular_media_desvio(resultado_kfold_5k)
     resultados_10k = calcular_media_desvio(resultado_kfold_10k)
     resultados_20k = calcular_media_desvio(resultado_kfold_20k)
-    print(gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k))
+    # print(gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k))
+    # salvar_tabela_excel_combinada(resultados_5k, resultados_10k, resultados_20k, 'resultados/kfold.xlsx')
+    plot_media_epocas(resultados_5k, resultados_10k, resultados_20k)
 
     # Plotar a variação das métricas em função do número de folds
     plot_variacao_folds(resultado_nfolds)

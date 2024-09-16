@@ -1,0 +1,46 @@
+Pasta fold_1:
+  Classe 0 : 2985 arquivos
+  Classe 1 : 2972 arquivos
+  Classe 2 : 2967 arquivos
+  Classe 3 : 2961 arquivos
+  Classe 4 : 3955 arquivos
+
+Pasta fold_2:
+  Classe 0 : 2985 arquivos
+  Classe 1 : 2972 arquivos
+  Classe 2 : 2967 arquivos
+  Classe 3 : 2961 arquivos
+  Classe 4 : 3955 arquivos
+
+Pasta fold_3:
+  Classe 0 : 2984 arquivos
+  Classe 1 : 2973 arquivos
+  Classe 2 : 2967 arquivos
+  Classe 3 : 2961 arquivos
+  Classe 4 : 3955 arquivos
+
+Pasta fold_4:
+  Classe 0 : 2984 arquivos
+  Classe 1 : 2973 arquivos
+  Classe 2 : 2967 arquivos
+  Classe 3 : 2961 arquivos
+  Classe 4 : 3955 arquivos
+
+Pasta fold_5:
+  Classe 0 : 2984 arquivos
+  Classe 1 : 2973 arquivos
+  Classe 2 : 2966 arquivos
+  Classe 3 : 2962 arquivos
+  Classe 4 : 3955 arquivos
+
+Nenhum arquivo duplicado encontrado.
+
+Pasta train:
+  Classe 0 : 14922 arquivos
+  Classe 1 : 14863 arquivos
+  Classe 2 : 14834 arquivos
+  Classe 3 : 14806 arquivos
+  Classe 4 : 19775 arquivos
+
+Nenhum arquivo duplicado encontrado.
+

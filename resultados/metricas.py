@@ -140,7 +140,7 @@ def plot_media_epocas(resultados_5k, resultados_10k, resultados_20k):
     for i, chave in enumerate(chaves_interesse):
         ax1.plot(num_epocas, [medias_5k[i], medias_10k[i], medias_20k[i]], marker='o', label=chave)
     
-    ax1.set_xlabel('Quantidade de Épocas')
+    ax1.set_xlabel('Quantidade de Épocas (milhares)')
     ax1.set_ylabel('Média')
     ax1.set_title('Média das Métricas em Função da Quantidade de Épocas')
     ax1.grid(True)

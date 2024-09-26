@@ -6,7 +6,7 @@ def create_txt(output_filename, fold_numbers):
         raise ValueError("All fold numbers must be between 1 and 5.")
     
     # Definindo o caminho base
-    base_path = ""
+    base_path = "data"
     
     # Nome do arquivo de saída
     output_file_path = os.path.join(base_path, output_filename)
@@ -28,7 +28,7 @@ def create_txt(output_filename, fold_numbers):
                 print(f"Directory {fold_path} does not exist.")
 
 if __name__ == "__main__":
-    total_folds = 5
+    total_folds = 6
     all_folds = list(range(1, total_folds + 1))
 
     # for i in range(1, total_folds + 1):

@@ -42,16 +42,16 @@ resultado_kfold_20k = {
 
 # n-folds
 resultado_nfolds = {
-    'ap_0': [0.9966, 0.9954, 0.9965, 0.9981, 1.0000],
+    'ap_0': [0.9966, 0.9954, 0.9965, 0.9981, 0.9971],
     'ap_1': [0.9998, 0.9995, 0.9992, 0.9998, 1.0000],
-    'ap_2': [0.9956, 0.9978, 0.9990, 0.9971, 0.9996],
+    'ap_2': [0.9956, 0.9978, 0.9990, 0.9971, 0.9972],
     'ap_3': [0.9996, 0.9997, 0.9994, 0.9999, 0.9998],
     'ap_4': [1.0000, 1.0000, 1.0000, 1.0000, 1.0000],
-    'map': [0.998312, 0.998486, 0.998821, 0.998957, 0.999867],
-    'precision': [0.99, 0.99, 0.99, 0.98, 1.00],
+    'map': [0.998312, 0.998486, 0.998821, 0.998957, 0.998826],
+    'precision': [0.99, 0.99, 0.99, 0.98, 0.99],
     'recall': [0.99, 0.99, 1.00, 0.99, 1.00],
-    'f1': [0.99, 0.99, 1.00, 0.99, 1.00],
-    'IoU': [0.8662, 0.8664, 0.8691, 0.8292, 0.8972]
+    'f1': [0.99, 0.99, 1.00, 0.99, 0.99],
+    'IoU': [0.8662, 0.8664, 0.8691, 0.8292, 0.8689]
 }
 
 # final
@@ -141,7 +141,7 @@ def plot_media_epocas(resultados_5k, resultados_10k, resultados_20k):
         ax1.plot(num_epocas, [medias_5k[i], medias_10k[i], medias_20k[i]], marker='o', label=chave)
     
     ax1.set_xlabel('Quantidade de Épocas (milhares)')
-    ax1.set_ylabel('Média')
+    ax1.set_ylabel('ap e mAP')
     ax1.set_title('Média das Métricas em Função da Quantidade de Épocas')
     ax1.grid(True)
     
@@ -170,7 +170,7 @@ def plot_variacao_folds(resultado_nfolds):
         ax1.plot(num_folds, resultado_nfolds[chave], marker='o', label=chave)
     
     ax1.set_xlabel('Número de Folds')
-    ax1.set_ylabel('Valor')
+    ax1.set_ylabel('ap e mAP')
     ax1.set_title('Variação das Métricas em Função do Número de Folds')
     ax1.grid(True)
     
@@ -187,16 +187,26 @@ def plot_variacao_folds(resultado_nfolds):
     
     plt.show()
 
+def gerar_tabela_latex_nfolds(resultados_nfolds):
+    tabela_latex = "\\begin{table}[H]\n\\centering\n\\caption{Resultados n-folds}\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline\n"
+    tabela_latex += "Métrica & Fold 1 & Fold 2 & Fold 3 & Fold 4 & Fold 5 \\\\\n\\hline\n"
+    
+    for chave, valores in resultados_nfolds.items():
+        tabela_latex += f"{chave} & {valores[0]:.6f} & {valores[1]:.6f} & {valores[2]:.6f} & {valores[3]:.6f} & {valores[4]:.6f} \\\\\n\\hline\n"
+    
+    tabela_latex += "\\end{tabular}\n\\end{table}"
+    return tabela_latex
+
 if __name__ == '__main__':
     # Calcular a média e desvio padrão dos resultados
-    resultados_5k = calcular_media_desvio(resultado_kfold_5k)
-    resultados_10k = calcular_media_desvio(resultado_kfold_10k)
-    resultados_20k = calcular_media_desvio(resultado_kfold_20k)
+    # resultados_5k = calcular_media_desvio(resultado_kfold_5k)
+    # resultados_10k = calcular_media_desvio(resultado_kfold_10k)
+    # resultados_20k = calcular_media_desvio(resultado_kfold_20k)
     # print(gerar_tabela_latex_combinada(resultados_5k, resultados_10k, resultados_20k))
     # salvar_tabela_excel_combinada(resultados_5k, resultados_10k, resultados_20k, 'resultados/kfold.xlsx')
-    plot_media_epocas(resultados_5k, resultados_10k, resultados_20k)
+    # plot_media_epocas(resultados_5k, resultados_10k, resultados_20k)
 
     # Plotar a variação das métricas em função do número de folds
-    plot_variacao_folds(resultado_nfolds)
+    # plot_variacao_folds(resultado_nfolds)
+    print(gerar_tabela_latex_nfolds(resultado_nfolds))
 
-    
